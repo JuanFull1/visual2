@@ -1,0 +1,295 @@
+// =========================
+// CLASE DE CONEXION
+// =========================
+package practica1;
+
+import java.sql.Connection;
+import java.sql.DriverManager;
+import javax.swing.JOptionPane;
+
+public class Conexion {
+    
+    Connection cc;
+    
+    public Connection conectar(String base) {
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            cc = DriverManager.getConnection("jdbc:mysql://localhost:3307/" + base, "root", "");
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Error de conexión: " + e.getMessage());
+        }
+        return cc;
+    }
+}   
+
+
+// =========================
+// COMPONENTE PROPIO JTable
+// =========================
+package practica1;
+
+import java.awt.Color;
+import java.awt.Component;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.Statement;
+import javax.swing.JOptionPane;
+import javax.swing.JTable;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.DefaultTableModel;
+
+public class TablaBDMio extends JTable {
+    
+    public TablaBDMio() {
+        super();
+    }
+    
+    public void mostrarColumna(String base, String tabla, String columna) {
+        try {
+            DefaultTableModel modelo = new DefaultTableModel();
+            modelo.addColumn(columna);
+
+            Conexion cn = new Conexion();
+            Connection cc = cn.conectar(base);
+
+            String sql = "SELECT " + columna + " FROM " + tabla;
+            Statement st = cc.createStatement();
+            ResultSet rs = st.executeQuery(sql);
+
+            while (rs.next()) {
+                Object[] fila = new Object[1];
+                fila[0] = rs.getObject(columna);
+                modelo.addRow(fila);
+            }
+
+            this.setModel(modelo);
+
+            this.setRowHeight(25);
+            this.getTableHeader().setReorderingAllowed(false);
+            pintarCeldas();
+
+            rs.close();
+            st.close();
+            cc.close();
+
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Error al mostrar datos: " + e.getMessage());
+        }
+    }
+    
+    public void pintarCeldas() {
+        this.setDefaultRenderer(Object.class, new DefaultTableCellRenderer() {
+            @Override
+            public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+                Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+                
+                if (isSelected) {
+                    c.setBackground(table.getSelectionBackground());
+                    c.setForeground(table.getSelectionForeground());
+                } else {
+                    c.setBackground(value instanceof Number ? Color.RED : value instanceof String ? Color.GREEN : Color.WHITE);
+                    c.setForeground(value instanceof Number ? Color.WHITE : Color.BLACK);
+                }
+                
+                return c;
+            }
+        });
+    }
+}
+
+
+// =========================
+// COMPONENTE PROPIO JTextField
+// =========================
+package practica1;
+
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.Statement;
+import javax.swing.JOptionPane;
+import javax.swing.JTextField;
+
+public class TextFieldBDMio extends JTextField {
+    
+    public TextFieldBDMio() {
+        super();
+    }
+    
+    public void mostrarPrimerDato(String base, String tabla, String columna) {
+        try {
+            Conexion cn = new Conexion();
+            Connection cc = cn.conectar(base);
+
+            String sql = "SELECT " + columna + " FROM " + tabla + " LIMIT 1";
+            Statement st = cc.createStatement();
+            ResultSet rs = st.executeQuery(sql);
+
+            if (rs.next()) {
+                this.setText(rs.getString(columna));
+            }
+
+            rs.close();
+            st.close();
+            cc.close();
+
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Error al mostrar dato: " + e.getMessage());
+        }
+    }
+}
+
+
+// =========================
+// COMPONENTE PROPIO JTextArea
+// =========================
+package practica1;
+
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.Statement;
+import javax.swing.JOptionPane;
+import javax.swing.JTextArea;
+
+public class TextAreaBDMio extends JTextArea {
+    
+    public TextAreaBDMio() {
+        super();
+    }
+    
+    public void mostrarColumnaTexto(String base, String tabla, String columna) {
+        try {
+            this.setText("");
+
+            Conexion cn = new Conexion();
+            Connection cc = cn.conectar(base);
+
+            String sql = "SELECT " + columna + " FROM " + tabla;
+            Statement st = cc.createStatement();
+            ResultSet rs = st.executeQuery(sql);
+
+            while (rs.next()) {
+                this.append(rs.getString(columna) + "\n");
+            }
+
+            rs.close();
+            st.close();
+            cc.close();
+
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Error al mostrar datos: " + e.getMessage());
+        }
+    }
+}
+
+
+
+// =========================
+// COMPONENTE PROPIO JComboBox
+// =========================
+package practica1;
+
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.Statement;
+import javax.swing.JComboBox;
+import javax.swing.JOptionPane;
+
+public class ComboBDMio extends JComboBox<String> {
+    
+    public ComboBDMio() {
+        super();
+    }
+    
+    public void cargarDatos(String base, String tabla, String columna) {
+        try {
+            this.removeAllItems();
+
+            Conexion cn = new Conexion();
+            Connection cc = cn.conectar(base);
+
+            String sql = "SELECT " + columna + " FROM " + tabla;
+            Statement st = cc.createStatement();
+            ResultSet rs = st.executeQuery(sql);
+
+            while (rs.next()) {
+                this.addItem(rs.getString(columna));
+            }
+
+            rs.close();
+            st.close();
+            cc.close();
+
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Error al cargar datos: " + e.getMessage());
+        }
+    }
+}
+
+//Si usas Jtable
+
+public frmPrincipal() {
+    initComponents();
+}
+
+public void cargarTabla() {
+    tablaBDMio1.mostrarColumna("colegio", "estudiantes", "cedula");
+}
+
+private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {                                         
+    cargarTabla();
+}
+
+
+
+//Jtxfield
+
+public frmPrincipal() {
+    initComponents();
+}
+
+public void cargarTextField() {
+    textFieldBDMio1.mostrarPrimerDato("colegio", "estudiantes", "cedula");
+}
+
+private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {                                         
+    cargarTextField();
+}
+
+
+
+//txtArea 
+
+public frmPrincipal() {
+    initComponents();
+}
+
+public void cargarTextArea() {
+    textAreaBDMio1.mostrarColumnaTexto("colegio", "estudiantes", "cedula");
+}
+
+private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {                                         
+    cargarTextArea();
+}
+
+//Combo box
+
+public frmPrincipal() {
+    initComponents();
+}
+
+public void cargarCombo() {
+    comboBDMio1.cargarDatos("colegio", "estudiantes", "cedula");
+}
+
+private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {                                         
+    cargarCombo();
+}
+
+
+
+
+
+
+
+
+
