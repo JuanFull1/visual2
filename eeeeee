@@ -140,6 +140,79 @@ public class TextFieldBDMio extends JTextField {
 
 
 // =========================
+// COMPONENTE PROPIO JList
+// =========================
+package practica1;
+
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.Statement;
+import javax.swing.DefaultListModel;
+import javax.swing.JList;
+import javax.swing.JOptionPane;
+
+public class JListBDMio extends JList<String> {
+    
+    public JListBDMio() {
+        super();
+    }
+
+    // Método para cargar datos desde la base de datos y mostrarlos en el JList
+    public void cargarDatosComoLista(String base, String tabla, String columna) {
+        try {
+            DefaultListModel<String> modeloLista = new DefaultListModel<>();
+            Conexion cn = new Conexion();
+            Connection cc = cn.conectar(base);
+
+            String sql = "SELECT " + columna + " FROM " + tabla;
+            Statement st = cc.createStatement();
+            ResultSet rs = st.executeQuery(sql);
+
+            while (rs.next()) {
+                modeloLista.addElement(rs.getString(columna));
+            }
+
+            this.setModel(modeloLista);  // Establecer el modelo en el JList
+
+            rs.close();
+            st.close();
+            cc.close();
+
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Error al cargar datos como lista: " + e.getMessage());
+        }
+    }
+
+    // Método para cargar datos con condiciones (WHERE)
+    public void cargarDatosComoListaConWhere(String base, String tabla, String columna, String condicion) {
+        try {
+            DefaultListModel<String> modeloLista = new DefaultListModel<>();
+            Conexion cn = new Conexion();
+            Connection cc = cn.conectar(base);
+
+            String sql = "SELECT " + columna + " FROM " + tabla + " WHERE " + condicion;
+            Statement st = cc.createStatement();
+            ResultSet rs = st.executeQuery(sql);
+
+            while (rs.next()) {
+                modeloLista.addElement(rs.getString(columna));
+            }
+
+            this.setModel(modeloLista);  // Establecer el modelo en el JList
+
+            rs.close();
+            st.close();
+            cc.close();
+
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Error al cargar datos como lista con condición: " + e.getMessage());
+        }
+    }
+}
+
+
+
+// =========================
 // COMPONENTE PROPIO JTextArea
 // =========================
 package practica1;
@@ -240,6 +313,29 @@ private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {
 }
 
 
+// =========================JLIST
+
+
+public class frmPrincipal extends javax.swing.JFrame {
+    
+    // El JList ya ha sido arrastrado desde el diseñador con el nombre 'listBDMio1'
+    public frmPrincipal() {
+        initComponents();
+    }
+
+    // Método para cargar los datos como lista
+    public void cargarLista() {
+        // Aquí solo accedes al JList arrastrado en el formulario (listBDMio1)
+        JListBDMio listBDMio = new JListBDMio();  // Crear instancia de la clase
+        listBDMio.cargarDatosComoLista(listBDMio1, "colegio", "estudiantes", "cedula");
+    }
+
+    // Método con botón para ejecutar el cargarLista
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {                                         
+        cargarLista();
+    }
+
+
 
 //Jtxfield
 
@@ -285,8 +381,8 @@ private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {
     cargarCombo();
 }
 
-
-
+//Descargar jar
+https://dev.mysql.com/downloads/connector/j/
 
 CREATE DATABASE fisei;
 USE fisei;
