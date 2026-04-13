@@ -123,3 +123,6 @@ INSERT INTO empleados (cedula, nombre, cargo, salario) VALUES
 ('1800000003', 'Maria Torres', 'Recepcionista', 450.75),
 ('1800000004', 'Carlos Mena', 'Administrador', 800.00),
 ('1800000005', 'Elena Vera', 'Auxiliar', 420.25);
+
+
+https://dev.mysql.com/downloads/connector/j/
