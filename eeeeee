@@ -1,3 +1,5 @@
+/*
+
 // =========================
 // CLASE DE CONEXION
 // =========================
@@ -401,6 +403,121 @@ INSERT INTO empleados (cedula, nombre, cargo, salario) VALUES
 ('1800000003', 'Maria Torres', 'Recepcionista', 450.75),
 ('1800000004', 'Carlos Mena', 'Administrador', 800.00),
 ('1800000005', 'Elena Vera', 'Auxiliar', 420.25);
+
+
+
+
+
+// =========================
+// COMPONENTE PROPIO JTable
+// =========================
+package practica1;
+
+import java.awt.Color;
+import java.awt.Component;
+import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.Statement;
+import javax.swing.JOptionPane;
+import javax.swing.JTable;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.DefaultTableModel;
+
+public class TablaBDMio extends JTable {
+    
+    public TablaBDMio() {
+        super();
+    }
+    
+    // Método para mostrar todos los datos de una tabla en la JTable
+    public void mostrarDatosCompletos(String base, String tabla) {
+        try {
+            // Crea un modelo para la tabla
+            DefaultTableModel modelo = new DefaultTableModel();
+            
+            // Establece la conexión con la base de datos
+            Conexion cn = new Conexion();
+            Connection cc = cn.conectar(base);
+            
+            // Recupera los datos de toda la tabla
+            String sql = "SELECT * FROM " + tabla;
+            Statement st = cc.createStatement();
+            ResultSet rs = st.executeQuery(sql);
+            
+            // Recupera los metadatos para saber cuántas columnas tiene la tabla
+            int columnCount = rs.getMetaData().getColumnCount();
+            
+            // Agrega los nombres de las columnas al modelo
+            for (int i = 1; i <= columnCount; i++) {
+                modelo.addColumn(rs.getMetaData().getColumnName(i));
+            }
+            
+            // Agrega los datos a la tabla
+            while (rs.next()) {
+                Object[] fila = new Object[columnCount];
+                for (int i = 0; i < columnCount; i++) {
+                    fila[i] = rs.getObject(i + 1);
+                }
+                modelo.addRow(fila);
+            }
+            
+            // Establece el modelo en la JTable
+            this.setModel(modelo);
+            this.setRowHeight(25);
+            this.getTableHeader().setReorderingAllowed(false);
+            pintarCeldas();
+            
+            // Cierra las conexiones
+            rs.close();
+            st.close();
+            cc.close();
+
+        } catch (Exception e) {
+            JOptionPane.showMessageDialog(null, "Error al mostrar datos: " + e.getMessage());
+        }
+    }
+    
+    public void pintarCeldas() {
+        this.setDefaultRenderer(Object.class, new DefaultTableCellRenderer() {
+            @Override
+            public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+                Component c = super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+                
+                if (isSelected) {
+                    c.setBackground(table.getSelectionBackground());
+                    c.setForeground(table.getSelectionForeground());
+                } else {
+                    c.setBackground(value instanceof Number ? Color.RED : value instanceof String ? Color.GREEN : Color.WHITE);
+                    c.setForeground(value instanceof Number ? Color.WHITE : Color.BLACK);
+                }
+                
+                return c;
+            }
+        });
+    }
+}
+
+
+public class frmPrincipal extends javax.swing.JFrame {
+
+    // El JList ya ha sido arrastrado desde el diseñador con el nombre 'listBDMio1'
+    public frmPrincipal() {
+        initComponents();
+    }
+
+    // Método para cargar todos los datos en la JTable
+    public void cargarTodosLosDatos() {
+        tablaBDMio1.mostrarDatosCompletos("fisei", "empleados");
+    }
+
+    // Método con botón para ejecutar el cargarTodosLosDatos
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {                                         
+        cargarTodosLosDatos();
+    }
+}
+
+
+*/
 
 
 
