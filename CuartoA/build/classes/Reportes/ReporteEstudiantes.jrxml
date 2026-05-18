@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="null" language="groovy" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="9ed7371f-523c-4a27-b826-85bdd16a87a8">
+	<property name="ireport.zoom" value="1.5"/>
+	<property name="ireport.x" value="0"/>
+	<property name="ireport.y" value="217"/>
+	<parameter name="cedula" class="java.lang.String"/>
+	<queryString>
+		<![CDATA[SELECT * FROM ESTUDIANTES WHERE ESTCEDULA=$P{cedula}]]>
+	</queryString>
+	<field name="estCedula" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="estNombre" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="estApellido" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="estDireccion" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<field name="estTelefono" class="java.lang.String">
+		<fieldDescription><![CDATA[]]></fieldDescription>
+	</field>
+	<variable name="estCedula_1" class="java.lang.Integer" resetType="Column" calculation="Count">
+		<variableExpression><![CDATA[$F{estCedula}]]></variableExpression>
+	</variable>
+	<variable name="variable1" class="java.lang.String"/>
+	<background>
+		<band splitType="Stretch"/>
+	</background>
+	<title>
+		<band height="61" splitType="Stretch">
+			<staticText>
+				<reportElement x="178" y="13" width="223" height="31" forecolor="#000000" uuid="d0dae636-060f-4e62-bb44-9b95c0dceaad"/>
+				<textElement textAlignment="Center">
+					<font fontName="Times New Roman" size="20"/>
+				</textElement>
+				<text><![CDATA[Reporte de Estudiantes]]></text>
+			</staticText>
+		</band>
+	</title>
+	<pageHeader>
+		<band height="50"/>
+	</pageHeader>
+	<columnHeader>
+		<band height="27" splitType="Stretch">
+			<staticText>
+				<reportElement x="138" y="2" width="100" height="20" uuid="d3e821ae-a137-4f31-aeaa-eb3a71fbe927"/>
+				<text><![CDATA[NOMBRE]]></text>
+			</staticText>
+			<staticText>
+				<reportElement x="17" y="2" width="100" height="20" uuid="1b5f0838-647d-4163-be4d-1fd7b9127ec0"/>
+				<text><![CDATA[CEDULA]]></text>
+			</staticText>
+		</band>
+	</columnHeader>
+	<detail>
+		<band height="22" splitType="Stretch">
+			<textField>
+				<reportElement x="138" y="0" width="100" height="20" uuid="abee9089-b583-4007-aab7-db436caf8763"/>
+				<textFieldExpression><![CDATA[$F{estNombre}+ " " +$F{estApellido}]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="17" y="0" width="100" height="20" uuid="74b18d3a-b42e-439f-bc4b-5906948648af"/>
+				<textFieldExpression><![CDATA[$F{estCedula}]]></textFieldExpression>
+			</textField>
+		</band>
+	</detail>
+	<columnFooter>
+		<band height="55" splitType="Stretch">
+			<textField>
+				<reportElement x="138" y="5" width="100" height="20" uuid="9b60f114-a2b5-45c2-9c87-b3d1e03897bf"/>
+				<textFieldExpression><![CDATA[2+2]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="253" y="5" width="100" height="20" uuid="507c7310-a5fb-47c9-bc7f-b1ff0a1efbba"/>
+				<textFieldExpression><![CDATA[1]]></textFieldExpression>
+			</textField>
+			<textField>
+				<reportElement x="17" y="5" width="100" height="20" uuid="e9bc1d1b-1797-4f78-9efe-808e72b78fed"/>
+				<textFieldExpression><![CDATA[$V{estCedula_1}]]></textFieldExpression>
+			</textField>
+		</band>
+	</columnFooter>
+	<pageFooter>
+		<band height="54" splitType="Stretch"/>
+	</pageFooter>
+	<summary>
+		<band height="163" splitType="Stretch">
+			<stackedBar3DChart>
+				<chart>
+					<reportElement x="2" y="0" width="261" height="163" uuid="c95a1c34-5324-448f-bb9e-10c62a5503f9"/>
+					<chartTitle/>
+					<chartSubtitle/>
+					<chartLegend/>
+				</chart>
+				<categoryDataset>
+					<categorySeries>
+						<seriesExpression><![CDATA["Cedula"]]></seriesExpression>
+						<categoryExpression><![CDATA[$F{estCedula}]]></categoryExpression>
+						<valueExpression><![CDATA[$V{estCedula_1}]]></valueExpression>
+					</categorySeries>
+					<categorySeries>
+						<seriesExpression><![CDATA["Apellidos"]]></seriesExpression>
+						<categoryExpression><![CDATA[$F{estApellido}]]></categoryExpression>
+						<valueExpression><![CDATA[$V{estCedula_1}]]></valueExpression>
+					</categorySeries>
+				</categoryDataset>
+				<bar3DPlot>
+					<plot/>
+					<itemLabel/>
+					<categoryAxisFormat>
+						<axisFormat/>
+					</categoryAxisFormat>
+					<valueAxisFormat>
+						<axisFormat/>
+					</valueAxisFormat>
+				</bar3DPlot>
+			</stackedBar3DChart>
+			<pieChart>
+				<chart>
+					<reportElement x="263" y="0" width="292" height="163" uuid="e5872db9-f1bd-4368-80c1-64c176b45137"/>
+					<chartTitle/>
+					<chartSubtitle/>
+					<chartLegend/>
+				</chart>
+				<pieDataset>
+					<keyExpression><![CDATA[$F{estDireccion}]]></keyExpression>
+					<valueExpression><![CDATA[$V{estCedula_1}]]></valueExpression>
+				</pieDataset>
+				<piePlot>
+					<plot/>
+					<itemLabel/>
+				</piePlot>
+			</pieChart>
+		</band>
+	</summary>
+</jasperReport>
