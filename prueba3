@@ -1,3 +1,5 @@
+/*
+
 //Conexion 
 
 import javax.swing.JOptionPane;
@@ -530,8 +532,344 @@ INSERT INTO cursos VALUES ('4', 'Fisica', '1');
 
 
 
+//==========================================================
+// CONSULTAS SQL Y CONCEPTOS IMPORTANTES PARA JASPERREPORTS
+//==========================================================
 
 
 
+//==========================================================
+// CONSULTA SIMPLE MOSTRAR TODOS LOS ESTUDIANTES
+//==========================================================
+
+SELECT * FROM estudiantes
+
+/*
+Muestra todos los estudiantes registrados.
+
+Campos:
+$F{estCedula}
+$F{estNombre}
+$F{estApellido}
+$F{estDireccion}
+$F{estTelefono}
+
+*/
+
+
+
+//==========================================================
+// CONSULTA CON PARAMETRO POR CEDULA
+//==========================================================
+
+SELECT *
+FROM estudiantes
+WHERE estCedula = $P{cedula}
+
+/*
+$P{cedula} es un parametro.
+
+Sirve para filtrar un estudiante especifico.
+
+En Java:
+
+Map parametros = new HashMap();
+parametros.put("cedula", jtxtCedula.getText());
+
+Tipo del parametro:
+java.lang.String
+
+*/
+
+
+
+//==========================================================
+// CONSULTA CON PARAMETRO POR NOMBRE
+//==========================================================
+
+SELECT *
+FROM estudiantes
+WHERE estNombre = $P{nombre}
+
+/*
+Permite buscar estudiantes por nombre.
+
+Parametro:
+$P{nombre}
+
+Tipo:
+java.lang.String
+
+*/
+
+
+
+//==========================================================
+// CONSULTA MOSTRAR CURSOS DE UN ESTUDIANTE
+//==========================================================
+
+SELECT curId, curNombre
+FROM cursos
+WHERE estCedula = $P{cedula}
+
+/*
+Muestra todos los cursos pertenecientes
+a un estudiante especifico.
+
+Usa el parametro:
+$P{cedula}
+
+Ejemplo:
+Cedula = 1
+
+Resultado:
+Compu Visual
+Matematicas
+Fisica
+
+*/
+
+
+
+//==========================================================
+// CONSULTA RELACIONANDO ESTUDIANTES Y CURSOS
+//==========================================================
+
+SELECT e.estCedula,
+       e.estNombre,
+       e.estApellido,
+       c.curId,
+       c.curNombre
+FROM estudiantes e, cursos c
+WHERE e.estCedula = c.estCedula
+
+/*
+Relaciona estudiantes con cursos.
+
+Muestra:
+Cedula
+Nombre
+Apellido
+Curso
+
+Esto se usa mucho para reportes generales.
+
+*/
+
+
+
+//==========================================================
+// CONSULTA MOSTRAR ESTUDIANTES DE UN CURSO
+//==========================================================
+
+SELECT e.estCedula,
+       e.estNombre,
+       e.estApellido,
+       c.curNombre
+FROM estudiantes e, cursos c
+WHERE e.estCedula = c.estCedula
+AND c.curNombre = $P{curso}
+
+/*
+Muestra estudiantes registrados
+en un curso especifico.
+
+Parametro:
+$P{curso}
+
+Ejemplo:
+Compu Visual
+
+*/
+
+
+
+//==========================================================
+// CONSULTA CONTAR TOTAL DE ESTUDIANTES
+//==========================================================
+
+SELECT COUNT(*) AS totalEstudiantes
+FROM estudiantes
+
+/*
+Cuenta todos los estudiantes registrados.
+
+Campo:
+$F{totalEstudiantes}
+
+*/
+
+
+
+//==========================================================
+// CONSULTA CONTAR CURSOS DE UN ESTUDIANTE
+//==========================================================
+
+SELECT e.estCedula,
+       e.estNombre,
+       COUNT(c.curId) AS totalCursos
+FROM estudiantes e, cursos c
+WHERE e.estCedula = c.estCedula
+AND e.estCedula = $P{cedula}
+GROUP BY e.estCedula, e.estNombre
+
+/*
+Cuenta cuantos cursos tiene un estudiante.
+
+Usa:
+COUNT()
+
+Parametro:
+$P{cedula}
+
+Campo:
+$F{totalCursos}
+
+*/
+
+
+
+//==========================================================
+// VARIABLES IMPORTANTES EN JASPERREPORTS
+//==========================================================
+
+/*
+
+$F{} = FIELD
+Campo que viene de la consulta SQL.
+
+Ejemplo:
+$F{estNombre}
+
+
+
+$P{} = PARAMETER
+Parametro enviado desde Java o Jasper.
+
+Ejemplo:
+$P{cedula}
+
+
+
+$V{} = VARIABLE
+Variable interna del reporte.
+
+Ejemplo:
+$V{REPORT_COUNT}
+
+Sirve para:
+- Numerar filas
+- Contar registros
+- Acumuladores
+
+*/
+
+
+
+//==========================================================
+// EJEMPLO MAESTRO DETALLE
+//==========================================================
+
+/*
+
+MAESTRO:
+Muestra informacion principal.
+
+Ejemplo:
+Datos del estudiante.
+
+
+DETALLE:
+Muestra informacion relacionada.
+
+Ejemplo:
+Cursos del estudiante.
+
+
+MAESTRO SQL:
+
+SELECT estCedula,
+       estNombre,
+       estApellido
+FROM estudiantes
+WHERE estCedula = $P{cedula}
+
+
+
+DETALLE SQL:
+
+SELECT curId,
+       curNombre
+FROM cursos
+WHERE estCedula = $P{cedula}
+
+
+
+El maestro envia el parametro
+al detalle o subreporte.
+
+*/
+
+
+
+//==========================================================
+// SUBREPORT EXPRESSION
+//==========================================================
+
+/*
+
+Si el subreporte esta en la misma carpeta:
+
+"detalle.jasper"
+
+
+
+Si usa parametros:
+
+$P{SUBREPORT_DIR} + "detalle.jasper"
+
+
+
+SUBREPORT_DIR:
+
+C:\Users\User\Documents\NetBeansProjects\CuartoA\src\Reportes\
+
+*/
+
+
+
+//==========================================================
+// POSIBLES COSAS QUE PUEDEN TOMAR EN LA PRUEBA
+//==========================================================
+
+/*
+
+1. Crear parametros.
+
+2. Filtrar reportes por cedula o curso.
+
+3. Relacionar tablas.
+
+4. Crear subreportes.
+
+5. Contar registros.
+
+6. Mostrar estudiantes y cursos.
+
+7. Diferenciar:
+   $F{}
+   $P{}
+   $V{}
+
+8. Crear reportes maestro-detalle.
+
+9. Usar COUNT() y GROUP BY.
+
+10. Enviar parametros desde Java.
+
+*/
+
+
+*/
 
 
