@@ -1,0 +1,537 @@
+//Conexion 
+
+import javax.swing.JOptionPane;
+import java.sql.*;
+
+/**
+ *
+ * @author Lenovo
+ */
+public class Conexion {
+    
+     public Connection conectar(){
+        Connection conectar = null ;
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            
+            conectar = DriverManager.getConnection(
+                "jdbc:mysql://localhost:3306/cuarto",
+                "root",
+                ""
+            );
+            System.out.println((conectar == null)? "No valio" : "si valio");
+            
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(null, ex);
+        }
+        return conectar;
+    }
+}
+
+
+
+
+
+
+//DAO 
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
+
+/*
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
+ * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
+ */
+
+/**
+ *
+ * @author Lenovo
+ */
+public class DAO {
+    
+        
+ 
+        public void insertEstudentDAO(Estudiantes estudiante) {
+        try {
+            Conexion cn = new Conexion();
+            Connection cc = cn.conectar();
+            String sql = "INSERT INTO estudiantes VALUES(?,?,?,?,?)";
+            PreparedStatement psd = cc.prepareStatement(sql);
+            psd.setString(1, estudiante.getEstCedula());
+            psd.setString(2, estudiante.getEstNombre());
+            psd.setString(3, estudiante.getEstApellido());
+            psd.setString(4, estudiante.getEstDireccion());
+            psd.setString(5, estudiante.getEstTelefono());
+
+            int respuesta = psd.executeUpdate();
+            if (respuesta > 0) {
+                JOptionPane.showMessageDialog(null, "Se inserto un Estudiante");
+                //selectEstudent();
+            }
+
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(null, ex);
+        }
+    }
+
+    public List<Estudiantes> selectStudentDao() {
+
+    List<Estudiantes> lista = new ArrayList<>();
+
+    try {
+        Conexion cn = new Conexion();
+        Connection cc = cn.conectar();
+        String sql = "SELECT * FROM estudiantes";
+        Statement psd = cc.createStatement();
+        ResultSet rs = psd.executeQuery(sql);
+
+        while (rs.next()) {
+            Estudiantes est = new Estudiantes(
+                    rs.getString("estCedula"),
+                    rs.getString("estNombre"),
+                    rs.getString("estApellido"),
+                    rs.getString("estDireccion"),
+                    rs.getString("estTelefono")
+            );
+
+            lista.add(est);
+        }
+
+    } catch (SQLException ex) {
+        JOptionPane.showMessageDialog(null, "No se pudo consultar los estudiantes");
+    }
+
+    return lista;
+}
+    
+    public void deleteEstudentDAO(String cedula) {
+    try {
+        Conexion cn = new Conexion();
+        Connection cc = cn.conectar();
+
+        String sql = "DELETE FROM estudiantes WHERE estCedula = ?";
+        PreparedStatement psd = cc.prepareStatement(sql);
+        psd.setString(1, cedula);
+
+        int respuesta = psd.executeUpdate();
+
+        if (respuesta > 0) {
+            JOptionPane.showMessageDialog(null, "Se borró el estudiante");
+        } else {
+            JOptionPane.showMessageDialog(null, "No se encontró el estudiante");
+        }
+
+    } catch (SQLException ex) {
+        JOptionPane.showMessageDialog(null, ex);
+    }
+}
+    
+    public void updateEstudentDAO(Estudiantes estudiante) {
+    try {
+        Conexion cn = new Conexion();
+        Connection cc = cn.conectar();
+
+        String sql = "UPDATE estudiantes SET estNombre=?, estApellido=?, estDireccion=?, estTelefono=? WHERE estCedula=?";
+        PreparedStatement psd = cc.prepareStatement(sql);
+
+        psd.setString(1, estudiante.getEstNombre());
+        psd.setString(2, estudiante.getEstApellido());
+        psd.setString(3, estudiante.getEstDireccion());
+        psd.setString(4, estudiante.getEstTelefono());
+        psd.setString(5, estudiante.getEstCedula());
+
+        int respuesta = psd.executeUpdate();
+
+        if (respuesta > 0) {
+            JOptionPane.showMessageDialog(null, "Se actualizó el estudiante");
+        } else {
+            JOptionPane.showMessageDialog(null, "No se encontró el estudiante");
+        }
+
+    } catch (SQLException ex) {
+        JOptionPane.showMessageDialog(null, ex);
+    }
+}
+}
+
+
+
+//Estudiantes
+
+
+public class Estudiantes {
+    private String estCedula;
+    private String estNombre;
+    private String estApellido;
+    private String estDireccion;
+    private String estTelefono;
+
+    public Estudiantes() {
+    }
+
+    public Estudiantes(String estCedula, String estNombre, String estApellido, String estDireccion, String estTelefono) {
+        this.estCedula = estCedula;
+        this.estNombre = estNombre;
+        this.estApellido = estApellido;
+        this.estDireccion = estDireccion;
+        this.estTelefono = estTelefono;
+    }
+
+    public String getEstCedula() {
+        return estCedula;
+    }
+
+    public void setEstCedula(String estCedula) {
+        this.estCedula = estCedula;
+    }
+
+    public String getEstNombre() {
+        return estNombre;
+    }
+
+    public void setEstNombre(String estNombre) {
+        this.estNombre = estNombre;
+    }
+
+    public String getEstApellido() {
+        return estApellido;
+    }
+
+    public void setEstApellido(String estApellido) {
+        this.estApellido = estApellido;
+    }
+
+    public String getEstDireccion() {
+        return estDireccion;
+    }
+
+    public void setEstDireccion(String estDireccion) {
+        this.estDireccion = estDireccion;
+    }
+
+    public String getEstTelefono() {
+        return estTelefono;
+    }
+
+    public void setEstTelefono(String estTelefono) {
+        this.estTelefono = estTelefono;
+    }
+   
+    
+}
+
+
+
+
+
+
+//Interfaz   
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.swing.table.DefaultTableModel;
+import java.sql.*;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.swing.JOptionPane;
+import javax.swing.event.ListSelectionEvent;
+import javax.swing.event.ListSelectionListener;
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JasperCompileManager;
+import net.sf.jasperreports.engine.JasperExportManager;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.JasperReport;
+import net.sf.jasperreports.view.JasperViewer;
+
+public class Interfaz extends javax.swing.JFrame {
+
+    DefaultTableModel model ;
+    
+    public Interfaz() {
+        initComponents();
+       // selectEstudent();
+       consumirSelectEstudentDao();
+        SelectRowEstudent();
+        
+    }
+
+    public void selectEstudent() {
+        try {
+            String titulos[] = {"CEDULA", "NOMBRE", "APELLIDO", "DIRECCION", "TELEFONO"};
+            String registros[]= new String[5];
+            model = new DefaultTableModel(null , titulos);
+            Conexion cn = new Conexion();
+            Connection cc = cn.conectar();
+            String sql = "select * from estudiantes";
+            Statement psd = cc.createStatement();
+            ResultSet rs=psd.executeQuery(sql);
+            
+             while (rs.next()) {
+                registros[0]=rs.getString("estCedula");
+                registros[1]=rs.getString("estNombre");
+                registros[2]=rs.getString("estApellido");
+                registros[3]=rs.getString("estDireccion");
+                registros[4]=rs.getString("estTelefono");
+                model.addRow(registros);
+            }  
+
+            jtblEstudiante.setModel(model);
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(null, "No se inserto comuniquese con el administrador ");
+        }
+   
+    }
+     
+    public void inserEstudent(){
+        try {
+            Conexion cn = new Conexion();
+            Connection cc = cn.conectar();
+            String sql = "insert into estudiantes values(?,?,?,?,?)";
+            PreparedStatement psd = cc.prepareStatement(sql);
+            psd.setString(1,jtxtCedula.getText());
+            psd.setString(2,jtxtNombre.getText());
+            psd.setString(3,jtxtApellido.getText());
+            psd.setString(4,jtxtDireccion.getText());
+            psd.setString(5, jtxtTelefono.getText());
+            
+            int res=psd.executeUpdate();
+            if (res>0) {
+                JOptionPane.showMessageDialog(null, "Se inserto correctamente");
+                selectEstudent();
+            }      
+        } catch (SQLException ex) {
+          JOptionPane.showMessageDialog(null, ex);
+        }
+    }
+    
+    
+    public void deleteEstudent() {
+        if (JOptionPane.showConfirmDialog(this, "Estas seguro de borrar", 
+                "Borrar estudiante",
+                JOptionPane.YES_NO_OPTION )==JOptionPane.YES_OPTION)
+            
+        try {
+            Conexion cn = new Conexion();
+            Connection cc = cn.conectar();
+            String sql = "delete from estudiantes where estcedula='" + jtxtCedula.getText() + "'";
+            PreparedStatement psd = cc.prepareStatement(sql);
+            
+            int res=psd.executeUpdate();
+            if (res>0) {
+                JOptionPane.showMessageDialog(null, "Se borro correctamente");
+                selectEstudent();
+            }  
+        } catch (SQLException ex) {
+            JOptionPane.showMessageDialog(null, ex);
+        }
+    }
+    
+    
+    public void updateEstudent() {
+    try {
+        Conexion cn = new Conexion();
+        Connection cc = cn.conectar();
+       
+        String sql = "UPDATE estudiantes SET "
+                    + "estNombre = '" + jtxtNombre.getText() + "', "
+                    + "estApellido = '" + jtxtApellido.getText() + "', "
+                    + "estDireccion = '" + jtxtDireccion.getText() + "', "
+                    + "estTelefono = '" + jtxtTelefono.getText() + "' "  
+                    + "WHERE estCedula = '" + jtxtCedula.getText() + "'"; 
+        
+        PreparedStatement psd = cc.prepareStatement(sql);
+        int res = psd.executeUpdate();
+        
+        if (res > 0) {
+            JOptionPane.showMessageDialog(null, "Se actualizó correctamente");
+            selectEstudent();  
+        }  
+    } catch (SQLException ex) {
+        JOptionPane.showMessageDialog(null, ex);
+    }
+}
+    
+    public void SelectRowEstudent ()
+    {
+        jtblEstudiante.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+            @Override
+            public void valueChanged(ListSelectionEvent e) {
+                if(jtblEstudiante.getSelectedRow()!=-1){
+                    int fila = jtblEstudiante.getSelectedRow();
+                jtxtCedula.setText(jtblEstudiante.getValueAt(fila, 0).toString());
+                jtxtNombre.setText(jtblEstudiante.getValueAt(fila, 1).toString());
+                jtxtApellido.setText(jtblEstudiante.getValueAt(fila,2).toString());
+                jtxtDireccion.setText(jtblEstudiante.getValueAt(fila,3).toString());
+                jtxtTelefono.setText(jtblEstudiante.getValueAt(fila,4).toString());
+                }
+            }
+        });
+    }
+    
+
+    
+   public void consumidorDaoInsertar() {
+
+    Estudiantes estudiante = new Estudiantes(
+            jtxtCedula.getText(),
+            jtxtNombre.getText(),
+            jtxtApellido.getText(),
+            jtxtDireccion.getText(),
+            jtxtTelefono.getText()
+    );
+
+    DAO dao = new DAO();
+    dao.insertEstudentDAO(estudiante);
+    consumirSelectEstudentDao();
+}
+    
+   
+    public void consumirSelectEstudentDao() {
+        try {
+            DAO dao = new DAO ();
+            List <Estudiantes> lista=dao.selectStudentDao();
+            String titulos[] = {"CEDULA", "NOMBRE", "APELLIDO", "DIRECCION", "TELEFONO"};
+            model = new DefaultTableModel(null , titulos);
+            for (Estudiantes est:lista){
+                Object[] registro = {est.getEstCedula(),
+                                    est.getEstNombre(),
+                                    est.getEstApellido(),
+                                    est.getEstDireccion(),
+                                    est.getEstTelefono()
+
+                };
+                model.addRow(registro);
+            }
+            jtblEstudiante.setModel(model);
+        } catch (Exception ex) {
+            JOptionPane.showMessageDialog(null, "No se inserto comuniquese con el administrador ");
+        }
+     
+    }
+    
+    
+    
+    public void consumidorDaoDelete() {
+        if (JOptionPane.showConfirmDialog(
+                this,
+                "Estas seguro de borrar este estudiante",
+                "Borrar estudiante",
+                JOptionPane.YES_NO_OPTION ) == JOptionPane.YES_OPTION) {
+
+            DAO dao = new DAO();
+            dao.deleteEstudentDAO(jtxtCedula.getText());
+            consumirSelectEstudentDao();
+        }
+    }
+    
+    public void consumidorDaoUpdate() {
+
+    Estudiantes estudiante = new Estudiantes(
+            jtxtCedula.getText(),
+            jtxtNombre.getText(),
+            jtxtApellido.getText(),
+            jtxtDireccion.getText(),
+            jtxtTelefono.getText()
+    );
+
+    DAO dao = new DAO();
+    dao.updateEstudentDAO(estudiante);
+    consumirSelectEstudentDao();
+}
+
+
+
+
+
+
+
+
+    private void jbtnGuardarActionPerformed(java.awt.event.ActionEvent evt) {                                            
+      //inserEstudent();
+      consumidorDaoInsertar();
+       
+      
+    }                                           
+
+    private void jbtnBorrarActionPerformed(java.awt.event.ActionEvent evt) {                                           
+        //deleteEstudent();
+        consumidorDaoDelete();
+        
+    }                                          
+
+    private void jbtnEditarActionPerformed(java.awt.event.ActionEvent evt) {                                           
+       // updateEstudent();
+       consumidorDaoUpdate();
+    }                                          
+
+    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {                                         
+        try {
+            
+            Conexion cn = new Conexion();
+            Connection cc = cn.conectar();
+            Map parametros = new HashMap();
+            parametros.put("cedula", jtxtCedula.getText());
+            JasperReport reporteEstudiantes = JasperCompileManager.compileReport("C:\\Users\\User\\Documents\\NetBeansProjects\\CuartoA\\src\\Reportes\\ReporteEstudiantes.jrxml");
+            JasperPrint imprimir = JasperFillManager.fillReport(reporteEstudiantes, parametros, cc);
+            JasperViewer.viewReport(imprimir,false);
+            JasperExportManager.exportReportToPdfFile(imprimir,"C:\\Users\\User\\Documents\\3ER SEMESTRE\\COMPUTACION VISUAL\\SEGUNDO PARCIAL\\reporte.pdf");
+        } catch (JRException ex) {
+            JOptionPane.showMessageDialog(null, ex);
+        }
+    }       
+
+
+
+//BD 
+
+
+-- Crear la base de datos
+CREATE DATABASE cuarto;
+USE cuarto;
+
+-- Crear tabla estudiantes
+CREATE TABLE estudiantes (
+    estCedula VARCHAR(10) NOT NULL PRIMARY KEY,
+    estNombre VARCHAR(50) NOT NULL,
+    estApellido VARCHAR(50) NOT NULL,
+    estDireccion VARCHAR(100),
+    estTelefono VARCHAR(15)
+);
+
+-- Crear tabla cursos
+CREATE TABLE cursos (
+    curId CHAR(5) NOT NULL PRIMARY KEY,
+    curNombre VARCHAR(20) NOT NULL,
+    estCedula CHAR(10) NOT NULL,
+    FOREIGN KEY (estCedula) REFERENCES estudiantes(estCedula)
+);
+
+-- Insertar datos en estudiantes
+INSERT INTO estudiantes VALUES ('1', 'Karen', 'Molina', 'Ambato', '0991111111');
+INSERT INTO estudiantes VALUES ('2', 'Juan', 'Toalombo', 'Ambato', '0992222222');
+
+-- Insertar datos en cursos
+INSERT INTO cursos VALUES ('1', 'Compu Visual', '1');
+INSERT INTO cursos VALUES ('2', 'Matematicas', '1');
+INSERT INTO cursos VALUES ('3', 'POO', '2');
+INSERT INTO cursos VALUES ('4', 'Fisica', '1');
+
+
+
+
+
+
+
+
+
