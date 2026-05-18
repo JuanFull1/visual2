@@ -9,6 +9,11 @@ import java.sql.*;
  *
  * @author Lenovo
  */
+/*
+
+
+
+
 public class Conexion {
     
      public Connection conectar(){
@@ -56,6 +61,11 @@ import javax.swing.table.DefaultTableModel;
  *
  * @author Lenovo
  */
+
+
+
+/*
+
 public class DAO {
     
         
@@ -561,7 +571,7 @@ $F{estTelefono}
 //==========================================================
 // CONSULTA CON PARAMETRO POR CEDULA
 //==========================================================
-
+ /*
 SELECT *
 FROM estudiantes
 WHERE estCedula = $P{cedula}
@@ -587,6 +597,11 @@ java.lang.String
 // CONSULTA CON PARAMETRO POR NOMBRE
 //==========================================================
 
+
+/*
+
+
+
 SELECT *
 FROM estudiantes
 WHERE estNombre = $P{nombre}
@@ -607,6 +622,10 @@ java.lang.String
 //==========================================================
 // CONSULTA MOSTRAR CURSOS DE UN ESTUDIANTE
 //==========================================================
+
+/*
+
+
 
 SELECT curId, curNombre
 FROM cursos
@@ -634,6 +653,10 @@ Fisica
 //==========================================================
 // CONSULTA RELACIONANDO ESTUDIANTES Y CURSOS
 //==========================================================
+/*
+
+
+
 
 SELECT e.estCedula,
        e.estNombre,
@@ -661,6 +684,10 @@ Esto se usa mucho para reportes generales.
 //==========================================================
 // CONSULTA MOSTRAR ESTUDIANTES DE UN CURSO
 //==========================================================
+/*
+
+
+
 
 SELECT e.estCedula,
        e.estNombre,
@@ -688,6 +715,10 @@ Compu Visual
 // CONSULTA CONTAR TOTAL DE ESTUDIANTES
 //==========================================================
 
+/*
+
+
+
 SELECT COUNT(*) AS totalEstudiantes
 FROM estudiantes
 
@@ -704,6 +735,9 @@ $F{totalEstudiantes}
 //==========================================================
 // CONSULTA CONTAR CURSOS DE UN ESTUDIANTE
 //==========================================================
+/*
+
+
 
 SELECT e.estCedula,
        e.estNombre,
@@ -870,6 +904,5 @@ C:\Users\User\Documents\NetBeansProjects\CuartoA\src\Reportes\
 */
 
 
-*/
 
 
